@@ -1,6 +1,21 @@
 node_modules/
 dist/
+
+# build artifacts (VitePress site)
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# secrets (never commit)
 .env
+
+# logs
 *.log
+
+# test artifacts (once Vitest runs)
+coverage/
+
+# TypeScript incremental builds (once tsc is used)
+*.tsbuildinfo
+
+# macOS
 .DS_Store
-v1/
