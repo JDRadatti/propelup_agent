@@ -58,6 +58,49 @@ Ask a question. The result is printed as JSON:
 3. `When is the pilot planned?`
    - Expect October 1, sourced from project-update.
 
+### Summary / overview requests
+
+- `Summarize the documents.` or `please summarize the documents you loaded`
+  - Must use the tools now (do not answer "I have no documents"): expect
+    `toolCalls` and `reads` both greater than 0, `sources` listing all three
+    document ids, and a real multi-line summary, not an empty or hidden answer.
+  - Same phrasing variations: `What is this about?`, `Give me a quick overview
+    of the company`.
+
+### Choosing a provider and model
+
+The CLI defaults to OpenAI (`gpt-4o-mini`, `https://api.openai.com/v1`). To
+point it at OpenRouter or any OpenAI-compatible endpoint without editing code:
+
+- **One-off override** (process env wins over `.env`):
+
+  ```
+  OPENAI_BASE_URL=https://openrouter.ai/api/v1 \
+  OPENAI_MODEL=openai/gpt-4o-mini \
+  OPENAI_API_KEY=sk-or-... \
+  npm start
+  ```
+
+  `OPENAI_MODEL` is read from the process env only; `OPENAI_API_KEY` and
+  `OPENAI_BASE_URL` can live in `.env` too.
+
+- **Persist in `.env`** (key + base URL; model stays per-run or in code):
+
+  ```
+  OPENAI_API_KEY=sk-or-...
+  OPENAI_BASE_URL=https://openrouter.ai/api/v1
+  ```
+
+  Then just `npm start`. Verify the endpoint took effect in the startup
+  settings line (`baseUrl: ...`).
+
+- **Change the default model for everyone**: edit `model` in
+  `src/config.ts` (`defaultConfig`), since model name is a code default.
+
+The CLI only prompts for setup when no API key is configured (first run); once
+a key exists in `.env` you get no prompt, so use the overrides above to switch
+endpoints.
+
 ### Tool behavior and failure recovery
 
 4. Ask something with a rare keyword pair, e.g. `vendor questionnaire`.

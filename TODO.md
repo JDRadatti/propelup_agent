@@ -138,6 +138,17 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
     - [x] bad-result cases (fabrication, wrong sources, prompt leakage, runaway guard) (48132c1)
     - [x] missing-information acknowledgment check (48132c1)
 
+## Feedback fixes
+
+- [x] support switching provider/model at launch (fadf073)
+    - [x] OPENAI_MODEL process-env override on top of the code default (fadf073)
+    - [x] document overrides (OpenRouter example) in manual-testing, README, config.md (pending)
+- [x] stop tool-less answers for "loaded documents / summarize" (be320d8)
+    - [x] buildSystemPrompt(ids) injects loaded corpus + grounding rules (be320d8)
+    - [x] LoopOptions.systemPrompt threading; CLI and golden build from ids (be320d8)
+    - [x] prompt unit tests and golden summarize case asserting reads (be320d8)
+    - [x] re-verified summarization end-to-end: 4 calls, 3 reads, 3 sources (be320d8)
+
 ## Future work (backlog)
 
 Deferred ideas are tracked in `docs/future.md` (sessions/memory, retrieval &

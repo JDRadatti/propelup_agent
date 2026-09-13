@@ -25,6 +25,20 @@ First run prompts for an OpenAI API key (hidden input) and an optional base URL,
 then saves them to `.env` with mode 600. `.env` is gitignored. To skip the
 prompts, export `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL`) first.
 
+To use an OpenAI-compatible provider other than OpenAI (e.g. OpenRouter),
+override at launch - process env wins over `.env`:
+
+```
+OPENAI_BASE_URL=https://openrouter.ai/api/v1 \
+OPENAI_MODEL=openai/gpt-4o-mini \
+OPENAI_API_KEY=sk-or-... \
+npm run start
+```
+
+`OPENAI_MODEL` is a process-env-only override; `OPENAI_API_KEY` /
+`OPENAI_BASE_URL` can also be pasted into `.env` to persist. Everything else
+(e.g. the default model) is a code default in `src/config.ts`.
+
 ### 3. Tests and checks
 
 ```

@@ -4,14 +4,16 @@ Index: [Home](../index.md)
 
 ## Overview
 
-Configuration is **defaults plus `.env` overrides**, merged once at startup and
-validated eagerly. The split is by sensitivity: secrets (api key, optional
-custom base URL) live in `.env`; non-secret settings (provider, model, limits,
-mode, `docsDir`) default in code and are changed by editing the defaults until
-a config file exists (future work).
+Configuration is **defaults plus `.env` / process-env overrides**, merged once
+at startup and validated eagerly. The split is by sensitivity: secrets (api
+key, optional custom base URL) live in `.env`; non-secret settings (provider,
+model, limits, mode, `docsDir`) default in code. The model can be switched per
+run with the `OPENAI_MODEL` env var, and the endpoint with
+`OPENAI_BASE_URL`; everything else changes by editing the defaults until a
+config file exists (future work).
 
-Precedence is flat and predictable: `code defaults < .env`. The resulting
-`AppConfig` is immutable after load. Validation runs at startup so every
+Precedence is flat and predictable: `code defaults < .env < process env`. The
+resulting `AppConfig` is immutable after load. Validation runs at startup so every
 misconfiguration surfaces as a clear `AgentError('config')` before the user is
 prompted for anything; a missing api key is not an error but a trigger for the
 CLI's first-run setup.
@@ -73,11 +75,16 @@ const DEFAULTS = {
   first-run setup rather than failing validation.
 - `apiBaseUrl`/`baseUrl` is the only secret-adjacent setting that can be a
   custom endpoint; it must validate as an `https?` URL when present.
+- The model name can be overridden per run via `OPENAI_MODEL` (process env
+  only, not `.env`), e.g. `OPENAI_MODEL=openai/gpt-4o-mini npm run start` when
+  pointing at OpenRouter. `apiKey` and `baseUrl` are read from `.env` first and
+  may be overridden by `OPENAI_API_KEY` / `OPENAI_BASE_URL` process env vars.
 
 ## Input
 
-- `.env` (secrets) and the in-code defaults; nothing else. There is no config
-  file and no environment-variable layer in this version.
+- `.env` (secrets), the in-code defaults, and optional process-env overrides
+  (`OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`); nothing else. There is
+  no config file in this version.
 - Validation inputs: `mode` (enum), `limits` (positive integers), provider
   (recognized), `baseUrl` (URL shape if present), `docsDir` (exists, readable).
 
