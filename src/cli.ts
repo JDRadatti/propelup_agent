@@ -7,6 +7,7 @@ import { loadDocs } from './documents'
 import { builtinTools } from './tools/builtin'
 import { OpenAIChatModel } from './agent/model'
 import { runAgent } from './agent/loop'
+import { buildSystemPrompt } from './agent/prompt'
 import type { TurnResult } from './types'
 
 const rootDir = process.cwd()
@@ -96,6 +97,7 @@ async function main(): Promise<void> {
   })
   const docs = await loadDocs(config.docsDir)
   const tools = builtinTools(docs)
+  const systemPrompt = buildSystemPrompt(docs.map((d) => d.id))
   console.log(`Loaded ${docs.length} document(s). Ask a question (Ctrl-C to exit).`)
   const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: true })
   rl.setPrompt('> ')
@@ -108,7 +110,7 @@ async function main(): Promise<void> {
     }
     let result: TurnResult
     try {
-      result = await runAgent({ model, tools, limits: config.limits, input })
+      result = await runAgent({ model, tools, limits: config.limits, input, systemPrompt })
     } catch (e) {
       fail('agent', asTurnError(e).message, e instanceof Error ? e.stack : undefined)
     }

@@ -2,7 +2,7 @@ import { asTurnError } from '../errors'
 import type { Limits, Message, Source, Stats, Step, StopReason, TurnResult } from '../types'
 import { ToolRunner, type ToolDefinition } from '../tools/runner'
 import { tokenizeWords } from '../search'
-import { SYSTEM_PROMPT } from './prompt'
+import { buildSystemPrompt } from './prompt'
 import type { ChatModel } from './model'
 
 export interface LoopOptions {
@@ -10,6 +10,7 @@ export interface LoopOptions {
   tools: ToolDefinition[]
   limits: Limits
   input: string
+  systemPrompt?: string
 }
 
 export async function runAgent(opts: LoopOptions): Promise<TurnResult> {
@@ -17,7 +18,7 @@ export async function runAgent(opts: LoopOptions): Promise<TurnResult> {
   const stats: Stats = { tokensSent: 0, tokensReceived: 0, toolCalls: 0, reads: 0 }
   const runner = new ToolRunner(opts.tools, stats)
   const messages: Message[] = [
-    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'system', content: opts.systemPrompt ?? buildSystemPrompt([]) },
     { role: 'user', content: opts.input },
   ]
   let answer = ''
