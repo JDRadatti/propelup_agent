@@ -55,10 +55,15 @@ describe('builtin search tool', () => {
     expect(result.ok).toBe(false)
   })
 
-  it('reports no matches as a success with no hits', async () => {
+  it('reports no matches as a success with no hits, listing available ids', async () => {
     const result = await runner.execute('search_documents', { query: 'zebra unicorn' })
     expect(result.ok).toBe(true)
-    if (result.ok) expect(result.content).toMatch(/no documents matched/)
+    if (result.ok) {
+      expect(result.content).toMatch(/no documents matched/)
+      expect(result.content).toContain('project-update')
+      expect(result.content).toContain('meeting-notes')
+      expect(result.content).toContain('customer-update')
+    }
   })
 })
 

@@ -73,17 +73,21 @@ describeReal('golden cases (real API, needs OPENAI_API_KEY)', () => {
   )
 
   it(
-    'summarizes the loaded documents using the tools',
+    'summarizes the loaded documents using the tools, in any phrasing',
     async () => {
-      const r = await ask('Summarize the documents you loaded.')
       const ids = knownIds()
-      expect(['answer', 'maxTurns', 'maxTokens', 'maxToolCalls']).toContain(r.stopReason)
-      expect(r.stats.toolCalls).toBeGreaterThan(0)
-      expect(r.stats.reads).toBeGreaterThan(0)
-      expect(r.sources.length).toBeGreaterThan(0)
-      for (const s of r.sources) expect(ids).toContain(s.id)
-      expect(soft(r.answer)).not.toMatch(/haven'?t loaded any documents|have no documents/)
+      for (const q of ['please summarize the document', 'Summarize the documents']) {
+        const r = await ask(q)
+        expect(['answer', 'maxTurns', 'maxTokens', 'maxToolCalls']).toContain(r.stopReason)
+        expect(r.stats.toolCalls).toBeGreaterThan(0)
+        expect(r.stats.reads).toBeGreaterThan(0)
+        expect(r.sources.length).toBeGreaterThan(0)
+        for (const s of r.sources) expect(ids).toContain(s.id)
+        expect(soft(r.answer)).not.toMatch(
+          /haven'?t loaded any documents|there are no documents|no documents specifically/,
+        )
+      }
     },
-    180000,
+    300000,
   )
 })

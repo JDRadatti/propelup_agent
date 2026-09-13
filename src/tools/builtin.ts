@@ -19,7 +19,13 @@ export function builtinTools(documents: Document[]): ToolDefinition[] {
         const query = String(args.query ?? '').trim()
         if (!query) return { ok: false, message: 'query must be a non-empty string' }
         const hits = index.search(query)
-        if (hits.length === 0) return { ok: true, content: 'no documents matched the query' }
+        if (hits.length === 0) {
+          const available = documents.map((d) => d.id).join(', ')
+          return {
+            ok: true,
+            content: `no documents matched the query. Available ids: ${available}. Use get_document with one of these ids.`,
+          }
+        }
         return { ok: true, content: hits.map((h) => `${h.id}: ${h.excerpt}`).join('\n') }
       },
     },

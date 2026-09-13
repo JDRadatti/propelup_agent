@@ -15,6 +15,14 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toMatch(/never claim the documents are unavailable/i)
   })
 
+  it('routes whole-corpus overviews to direct retrieval, never keyword search', () => {
+    const prompt = buildSystemPrompt(['project-update'])
+    expect(prompt).toMatch(/whole-corpus overview: if asked to summarize/i)
+    expect(prompt).toMatch(/get_document every id listed above/i)
+    expect(prompt).toMatch(/never search for the literal words summarize, summary, or overview/i)
+    expect(prompt).toMatch(/a keyword search with no hits is not proof of absence/i)
+  })
+
   it('handles an empty corpus', () => {
     expect(buildSystemPrompt([])).toContain('none')
   })
