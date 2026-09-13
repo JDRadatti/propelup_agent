@@ -127,7 +127,7 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
 - [x] mode: regular omits steps; verbose includes the step trace (0da1e0c)
 - [x] REPL: repeat until the user exits or Ctrl-C (0da1e0c)
 - [x] agent/config errors: JSON on stdout, stack to stderr, exit code 1 (0da1e0c)
-- [x] docs/manual-testing.md with edge cases for the manual test pass (pending commit)
+- [x] docs/manual-testing.md with edge cases for the manual test pass (1cdfd57)
 
 ## Testing (design doc: docs/components/testing.md)
 
