@@ -22,6 +22,7 @@ export const DEFAULT_LIMITS: Limits = { maxTurns: 8, maxToolCalls: 8, maxTokens:
 const ENV_FILE = '.env'
 const ENV_KEY = 'OPENAI_API_KEY'
 const ENV_BASE_URL = 'OPENAI_BASE_URL'
+const ENV_MODEL = 'OPENAI_MODEL'
 
 export function defaultConfig(rootDir: string): AppConfig {
   return {
@@ -57,6 +58,7 @@ export function loadEnv(rootDir: string): Secrets {
 export function loadConfig(rootDir: string): { config: AppConfig; secrets: Secrets } {
   const config = defaultConfig(rootDir)
   const secrets = loadEnv(rootDir)
+  if (process.env[ENV_MODEL]) config.model = process.env[ENV_MODEL]
   if (secrets.baseUrl) config.baseUrl = secrets.baseUrl
   validateConfig(config)
   return { config, secrets }
