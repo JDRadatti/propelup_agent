@@ -1,11 +1,8 @@
 # PropelUp AI Take-home Exercise
 
-A tiny, single-agent TypeScript CLI that answers questions about a fictional
-startup from three sample documents. The agent is given two tools -
-`search_documents` (keyword search) and `get_document` (retrieve full contents)
-- and decides when to call them. Answers reference their sources and
-acknowledge missing information. No UI, deployment, or external data
-integrations.
+A single-agent CLI that answers questions about a fictional startup using two
+tools (keyword search + document retrieval). The model decides when to call
+them, cites its sources, and openly admits when the documents don't answer.
 
 ## Setup
 
@@ -21,23 +18,7 @@ npm install
 npm run start
 ```
 
-First run prompts for an OpenAI API key (hidden input) and an optional base URL,
-then saves them to `.env` with mode 600. `.env` is gitignored. To skip the
-prompts, export `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL`) first.
-
-To use an OpenAI-compatible provider other than OpenAI (e.g. OpenRouter),
-override at launch - process env wins over `.env`:
-
-```
-OPENAI_BASE_URL=https://openrouter.ai/api/v1 \
-OPENAI_MODEL=openai/gpt-4o-mini \
-OPENAI_API_KEY=sk-or-... \
-npm run start
-```
-
-`OPENAI_MODEL` is a process-env-only override; `OPENAI_API_KEY` /
-`OPENAI_BASE_URL` can also be pasted into `.env` to persist. Everything else
-(e.g. the default model) is a code default in `src/config.ts`.
+First run prompts for an API key and base URL, saved to .env (gitignored). Any OpenAI-compatible endpoint works; set OPENAI_BASE_URL / OPENAI_MODEL to switch.
 
 ### 3. Tests and checks
 
@@ -52,22 +33,59 @@ npm run typecheck   # TypeScript check only (no emit)
 npm run docs:dev
 ```
 
-The planning site (VitePress) covers the full design:
-`docs/index.md` indexes the per-component design docs, `docs/manual-testing.md`
-explains how to drive the agent by hand, and `docs/future.md` tracks deferred
-ideas.
-
 ## Approach
 
-- Minimal dependencies: raw `fetch` to the Chat Completions API; no runtime
-  deps, no SDK.
-- Two composable tools on a small, constructor-injected tool runner that
-  validates args, wraps failures into `{ ok: false }` results, and counts
-  reads.
-- In-memory `DocumentIndex` built at startup: token-overlap keyword scoring,
-  stable ordering, and a verbatim best-match excerpt per hit.
-- A serial while-loop with three hard limits (turns, tool calls, tokens),
-  partial answers on stop, tool-failure recovery, and verbatim-quote extraction
-  from retrieved documents into `sources`.
-- Terminal errors fail fast into a stable `error.code`, JSON on stdout, exit
-  code 1; secrets are confined to `.env`.
+Please refer to the [Planning Documentation](docs/index.md) for more information on each component's design and the tradeoffs considered while planning. 
+
+Agent Loop: 
+- send conversation + tool list -> model returns answer or tool calls -> run the tool, append result -> repeat.
+- Agent loop finishes if one of the five conditions are met: 1) agent finished with no more tool calls, 2) token budget hit, 3) tool call limit hit, 4) max turn limit hit, or 5) fatal error.
+
+CLI/Output:
+- CLI consists of an input area where the user can prompt the agent about the documentation  
+- Outputs as a raw json object showing the resulting answer, sources, stopReason, stats (tokens, tool calls, reads); mode: verbose also includes the full step trace.
+
+Security: 
+- The agent does not have any filesystem or shell scripting capabilities. 
+- Documents are read from configured document directory and stored in memory. 
+- The model never sees filesystem paths, only document ids.
+
+Tools: 
+- All tools use the same interface, making it very easy to add more tools. 
+- All tools use an in-memory list of documents. Documents are read from data/documents/ at startup; ids are injected into the system prompt.
+- A list of all tools is sent via JSON request body to the LLM provider. The agent decides which tools to call and the arguments.
+
+Available Tools: 
+- search_documents: Searches a document by keyword and returns every document that
+  matches. Uses DocumentIndex: tokenizes both sides,
+  builds a postings map at startup, scores each doc by number of distinct query
+  words it contains, ranks by score then by id (stable order). 
+- get_document: Returns full contents by document id (id = filename minus .txt) via an in-memory Map<string, string>.
+
+Testing: 
+- Unit suite (Vitest): no network: the loop's three limits and tool-failure
+  recovery, the tool runner (args validation, no-hit results that list
+  available ids), config precedence and secret handling, and the system-prompt
+  builder. Run with `npm run test`.
+- Golden suite (real API): key-gated: skipped unless OPENAI_API_KEY is set.
+  Checks the model really uses the tools: reads and sources on summarization
+  (both phrasings), honest missing-info instead of a fabricated doc id, no
+  system-prompt leakage, and stops within limits. Run it against any
+  OpenAI-compatible endpoint (OPENAI_BASE_URL).
+- Checks: `npm run typecheck` for types, `npm run docs:build` for the docs site.
+- Manual:  [Manual Testing](docs/manual-testing.md) has the interactive steps. 
+- [Testing Documentation](docs/components/testing.md) for more information.
+
+Dependencies: 
+- No agent frameworks for simplicity.
+- Dev dependencies for the Planning documentation and Vitest.
+
+## Future Steps
+
+- Add Session, Memory, and Caching
+- Documents are assumed to be small and fit in memory. Once larger documents are required, we would need to rethink and optimize how the search feature works. 
+- Consider updating the agent loop to be declarative
+- Add tools and other features based on specific use cases. For example, could add file system tools such as grep/glob/find or shell/python scripting. However, this would require much more testing.
+- Update CLI UX
+- Improve testing with more sample documents, examples, and LLM-as-judge, and CI/CD.
+
