@@ -154,6 +154,10 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
     - [x] no-hit search output lists available ids as recovery path (643b9e2)
     - [x] golden summary case covers weak and strong phrasings, asserts reads (643b9e2)
     - [x] docs (agent.md, manual-testing.md) sync (80273f5)
+- [x] OPENAI_MODE env override for verbose output (e7aa3d8)
+    - [x] config reads OPENAI_MODE; invalid values fail eager validation (e7aa3d8)
+    - [x] config tests: verbose override + invalid mode throws (e7aa3d8)
+    - [x] README + config.md + manual-testing.md document the override (pending)
 
 ## Future work (backlog)
 

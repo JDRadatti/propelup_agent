@@ -189,8 +189,9 @@ endpoints.
 ### Verbose vs regular output
 
 21. `mode: regular` (default) omits `steps`. To see the step trace, re-run with
-    `mode: verbose` (set in `src/config.ts` default or via env-aware config if
-    added) - expect a `steps` array with alternating model/tool steps.
+    `OPENAI_MODE=verbose npm run start` - expect a `steps` array with
+    alternating model/tool steps, and `mode: verbose` in the startup settings
+    line.
 
 ### Golden suite (automated)
 

@@ -8,9 +8,9 @@ Configuration is **defaults plus `.env` / process-env overrides**, merged once
 at startup and validated eagerly. The split is by sensitivity: secrets (api
 key, optional custom base URL) live in `.env`; non-secret settings (provider,
 model, limits, mode, `docsDir`) default in code. The model can be switched per
-run with the `OPENAI_MODEL` env var, and the endpoint with
-`OPENAI_BASE_URL`; everything else changes by editing the defaults until a
-config file exists (future work).
+run with the `OPENAI_MODEL` env var, the endpoint with `OPENAI_BASE_URL`, and
+the output mode with `OPENAI_MODE`; everything else changes by editing the
+defaults until a config file exists (future work).
 
 Precedence is flat and predictable: `code defaults < .env < process env`. The
 resulting `AppConfig` is immutable after load. Validation runs at startup so every
@@ -79,12 +79,16 @@ const DEFAULTS = {
   only, not `.env`), e.g. `OPENAI_MODEL=openai/gpt-4o-mini npm run start` when
   pointing at OpenRouter. `apiKey` and `baseUrl` are read from `.env` first and
   may be overridden by `OPENAI_API_KEY` / `OPENAI_BASE_URL` process env vars.
+- The output mode can be overridden per run via `OPENAI_MODE` (process env
+  only, not `.env`), e.g. `OPENAI_MODE=verbose npm run start` to include the
+  full step trace in the result JSON. Accepted values are `regular` and
+  `verbose`; anything else fails eager validation as an invalid mode.
 
 ## Input
 
 - `.env` (secrets), the in-code defaults, and optional process-env overrides
-  (`OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`); nothing else. There is
-  no config file in this version.
+  (`OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`, `OPENAI_MODE`);
+  nothing else. There is no config file in this version.
 - Validation inputs: `mode` (enum), `limits` (positive integers), provider
   (recognized), `baseUrl` (URL shape if present), `docsDir` (exists, readable).
 
@@ -106,6 +110,8 @@ const DEFAULTS = {
 - **Validation**: bad `mode`, zero/negative limits, unknown provider, invalid
   `baseUrl`, and a missing `docsDir` each raise `AgentError('config')` with a
   message naming the offending field.
+- **Mode override**: `OPENAI_MODE=verbose` yields `mode: 'verbose'`; an
+  invalid `OPENAI_MODE` value fails the same eager validation as a bad default.
 - **Defaults**: no `.env` yields provider `openai`, model `gpt-4o-mini`,
   `mode: 'regular'`, and positive default limits.
 - **Missing api key**: flagged as needing setup (not a config error).
