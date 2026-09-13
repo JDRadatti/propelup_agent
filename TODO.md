@@ -142,7 +142,7 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
 
 - [x] support switching provider/model at launch (fadf073)
     - [x] OPENAI_MODEL process-env override on top of the code default (fadf073)
-    - [x] document overrides (OpenRouter example) in manual-testing, README, config.md (pending)
+    - [x] document overrides (OpenRouter example) in manual-testing, README, config.md (4ee76a8)
 - [x] stop tool-less answers for "loaded documents / summarize" (be320d8)
     - [x] buildSystemPrompt(ids) injects loaded corpus + grounding rules (be320d8)
     - [x] LoopOptions.systemPrompt threading; CLI and golden build from ids (be320d8)
