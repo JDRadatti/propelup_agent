@@ -37,6 +37,18 @@ describe('config', () => {
     rmSync(root, { recursive: true })
   })
 
+  it('overrides mode with OPENAI_MODE and rejects invalid values', () => {
+    const root = tempRoot()
+    process.env.OPENAI_MODE = 'verbose'
+    expect(loadConfig(root).config.mode).toBe('verbose')
+    delete process.env.OPENAI_MODE
+    process.env.OPENAI_MODE = 'loud'
+    expect(() => loadConfig(root)).toThrowError(AgentError)
+    expect(() => loadConfig(root)).toThrowError(/mode/)
+    delete process.env.OPENAI_MODE
+    rmSync(root, { recursive: true })
+  })
+
   it('keeps the api key out of the config object by construction', () => {
     const root = tempRoot()
     writeFileSync(join(root, '.env'), 'OPENAI_API_KEY=sk-top-secret\n')

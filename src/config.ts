@@ -23,6 +23,7 @@ const ENV_FILE = '.env'
 const ENV_KEY = 'OPENAI_API_KEY'
 const ENV_BASE_URL = 'OPENAI_BASE_URL'
 const ENV_MODEL = 'OPENAI_MODEL'
+const ENV_MODE = 'OPENAI_MODE'
 
 export function defaultConfig(rootDir: string): AppConfig {
   return {
@@ -59,6 +60,7 @@ export function loadConfig(rootDir: string): { config: AppConfig; secrets: Secre
   const config = defaultConfig(rootDir)
   const secrets = loadEnv(rootDir)
   if (process.env[ENV_MODEL]) config.model = process.env[ENV_MODEL]
+  if (process.env[ENV_MODE]) config.mode = process.env[ENV_MODE] as AppConfig['mode']
   if (secrets.baseUrl) config.baseUrl = secrets.baseUrl
   validateConfig(config)
   return { config, secrets }
