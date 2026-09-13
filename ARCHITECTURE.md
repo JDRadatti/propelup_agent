@@ -4,7 +4,9 @@ Index: [AGENTS.md](AGENTS.md) · [TODO.md](TODO.md) · [docs](docs/index.md)
 
 ## Status
 
-Planning phase. Requirements live in `TODO.md`; implementation has not started.
+Implementation complete. Lives in `src/` (TypeScript, ESM, minimal deps), run
+via `npm run start`. Requirements and per-subtask commit hashes live in
+`TODO.md`; manual testing steps in `docs/manual-testing.md`.
 
 ## Goals
 
@@ -32,20 +34,19 @@ thinking, API stats, and reads).
 ## Component index
 
 Each component's design doc lives at `docs/components/<name>.md` and its
-checklist in `TODO.md`. Docs marked *(planned)* are placeholders not yet
-written; components follow the sign-off flow in `AGENTS.md`.
+checklist in `TODO.md`. Implementation lives in `src/`. 
 
-| Component              | Design doc                         | Status      |
-| ---------------------- | ---------------------------------- | ----------- |
-| Agent control loop     | `docs/components/agent.md`         | In progress |
-| CLI interaction        | `docs/components/cli.md`           | In progress |
-| Tool interface         | `docs/components/tools.md`         | In progress |
-| Document search tool   | `docs/components/search.md`        | In progress |
-| Document retrieve tool | `docs/components/retrieve.md`      | In progress |
-| Error handling         | `docs/components/errors.md`        | In progress |
-| Security model         | `docs/components/security.md`      | In progress |
-| Configuration          | `docs/components/config.md`        | In progress |
-| Testing strategy       | `docs/components/testing.md`       | In progress |
+| Component              | Design doc                         | Implementation        |
+| ---------------------- | ---------------------------------- | --------------------- |
+| Agent control loop     | `docs/components/agent.md`         | `src/agent/loop.ts`   |
+| CLI interaction        | `docs/components/cli.md`           | `src/cli.ts`          |
+| Tool interface         | `docs/components/tools.md`         | `src/tools/runner.ts` |
+| Document search tool   | `docs/components/search.md`        | `src/search.ts`       |
+| Document retrieve tool | `docs/components/retrieve.md`      | `src/tools/builtin.ts` |
+| Error handling         | `docs/components/errors.md`        | `src/errors.ts`       |
+| Security model         | `docs/components/security.md`      | `src/config.ts`       |
+| Configuration          | `docs/components/config.md`        | `src/config.ts`       |
+| Testing strategy       | `docs/components/testing.md`       | `test/`               |
 
 Stats (tokens, tool calls, reads) are owned by the agent component. A separate
 Output & stats doc was dropped; anything surplus lives in the

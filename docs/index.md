@@ -16,6 +16,10 @@
 
 - [Future work](future.md) - deferred ideas, run through a single registry
 
+## Manual testing
+
+- [How to test the agent by hand](manual-testing.md) - edge cases included
+
 ## Root docs (repo root, not part of this site)
 
 - `TODO.md` - requirements and todo checklists

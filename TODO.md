@@ -42,101 +42,101 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
 
 - [x] setup AGENTS.md and ARCHITECTURE.md
 - [x] pick tooling - TypeScript, minimal dependencies
-- [ ] tooling scaffold
-    - [ ] add dev deps (typescript, tsx, vitest, @types/node) and scripts (start/test/typecheck)
-    - [ ] tsconfig (strict, ESM) and vitest config
-    - [ ] sample-docs fixture in data/documents + .gitignore (committed root files only)
-    - [ ] drop deprecated v1/ entry from .gitignore
+- [x] tooling scaffold (7867c08)
+    - [x] add dev deps (typescript, tsx, vitest, @types/node) and scripts (start/test/typecheck) (7867c08)
+    - [x] tsconfig (strict, ESM) and vitest config (7867c08)
+    - [x] sample-docs fixture in data/documents + .gitignore (committed root files only) (7867c08)
+    - [x] drop deprecated v1/ entry from .gitignore (7867c08)
 
 ## Agent (design doc: docs/components/agent.md)
 
-- [ ] shared data model in src/types.ts
-    - [ ] StopReason, Limits, Stats
-    - [ ] ToolCall, Source, Step, Message
-    - [ ] TurnResult (+ error?), TurnResultError, ErrorCode
-- [ ] system prompt and rules of engagement (src/agent/prompt.ts)
-- [ ] ModelClient interface + OpenAI adapter via raw fetch (src/agent/model.ts)
-    - [ ] schema serialization and tool-use parsing
-    - [ ] map model failures to AgentError('model')
-- [ ] while-loop control (src/agent/loop.ts)
-    - [ ] serial tool execution, steps trace, partial answer on stop
-    - [ ] three hard limits (maxTurns, maxToolCalls, maxTokens) -> partial answer
-    - [ ] sources from retrieved docs, soft quotes, error mapping at boundary
-- [ ] stub ModelClient + loop tests
+- [x] shared data model in src/types.ts (6112875)
+    - [x] StopReason, Limits, Stats (6112875)
+    - [x] ToolCall, Source, Step, Message (6112875)
+    - [x] TurnResult (+ error?), TurnResultError, ErrorCode (6112875)
+- [x] system prompt and rules of engagement (src/agent/prompt.ts) (5f88518)
+- [x] ModelClient interface + OpenAI adapter via raw fetch (src/agent/model.ts) (5f88518)
+    - [x] schema serialization and tool-use parsing (5f88518)
+    - [x] map model failures to AgentError('model') (5f88518)
+- [x] while-loop control (src/agent/loop.ts) (e15c53b)
+    - [x] serial tool execution, steps trace, partial answer on stop (e15c53b)
+    - [x] three hard limits (maxTurns, maxToolCalls, maxTokens) -> partial answer (e15c53b)
+    - [x] sources from retrieved docs, soft quotes, error mapping at boundary (e15c53b)
+- [x] stub ModelClient + loop tests (48132c1)
 
 ## Tools (design doc: docs/components/tools.md)
 
-- [ ] ToolDefinition + ToolResult types
-- [ ] tool runner (src/tools/runner.ts)
-    - [ ] unknown tool / bad args -> failed result
-    - [ ] wrap thrown exceptions into { ok:false }
-    - [ ] countsRead increments Stats.reads on success only
-- [ ] builtinTools(docsDir) wiring
+- [x] ToolDefinition + ToolResult types (5956737)
+- [x] tool runner (src/tools/runner.ts) (5956737)
+    - [x] unknown tool / bad args -> failed result (5956737)
+    - [x] wrap thrown exceptions into { ok:false } (5956737)
+    - [x] countsRead increments Stats.reads on success only (5956737)
+- [x] builtinTools(docsDir) wiring (5956737)
 
 ## Search (design doc: docs/components/search.md)
 
-- [ ] tokenizer with offsets (case-insensitive, strip punctuation)
-- [ ] DocumentIndex build once at startup (token -> postings, doc tokens)
-- [ ] scoring: token-overlap, stable tiebreak, all matches ordered
-- [ ] verbatim best-match excerpt per hit
-- [ ] blank query -> { ok:false }; no matches -> { ok:true, hits:[] }
-- [ ] key unit tests
+- [x] tokenizer with offsets (case-insensitive, strip punctuation) (a79ca6c)
+- [x] DocumentIndex build once at startup (token -> postings, doc tokens) (a79ca6c)
+- [x] scoring: token-overlap, stable tiebreak, all matches ordered (a79ca6c)
+- [x] verbatim best-match excerpt per hit (a79ca6c)
+- [x] blank query -> { ok:false }; no matches -> { ok:true, hits:[] } (5956737)
+- [x] key unit tests (48132c1)
 
 ## Retrieve (design doc: docs/components/retrieve.md)
 
-- [ ] loadDocs(docsDir) -> Document[] (id = filename, sorted)
-- [ ] retrieve tool (verbatim text, returns by id from shared map)
-- [ ] unknown/blank id -> { ok:false } with hint to search first
-- [ ] key unit tests (verbatim, unknown, blank, empty docsDir, reads)
+- [x] loadDocs(docsDir) -> Document[] (id = filename, sorted) (a79ca6c)
+- [x] retrieve tool (verbatim text, returns by id from shared map) (5956737)
+- [x] unknown/blank id -> { ok:false } with hint to search first (5956737)
+- [x] key unit tests (verbatim, unknown, blank, empty docsDir, reads) (48132c1)
 
 ## Errors (design doc: docs/components/errors.md)
 
-- [ ] AgentError with ErrorCode union (model | tool | config | internal)
-- [ ] TurnResult.error? only on stopReason 'error'; partial answer/steps/stats kept
-- [ ] recoverable path: tool failures surface to the model via ToolResult
-- [ ] terminal path: catch at loop boundary, classify, no retry
-- [ ] CLI: JSON on stdout, stack to stderr, exit code 1
-- [ ] key tests (throwing tool wrapped, model error -> stopReason 'error')
+- [x] AgentError with ErrorCode union (model | tool | config | internal) (6112875)
+- [x] TurnResult.error? only on stopReason 'error'; partial answer/steps/stats kept (e15c53b)
+- [x] recoverable path: tool failures surface to the model via ToolResult (5956737)
+- [x] terminal path: catch at loop boundary, classify, no retry (e15c53b)
+- [x] CLI: JSON on stdout, stack to stderr, exit code 1 (0da1e0c)
+- [x] key tests (throwing tool wrapped, model error -> stopReason 'error') (48132c1)
 
 ## Output & stats
 
 - [x] output. should it show thinking? - decided: verbose mode includes the step trace
-- [ ] Stats recorded (tokens, tool calls, reads) and printed in the JSON result
+- [x] Stats recorded (tokens, tool calls, reads) and printed in the JSON result (e15c53b, 0da1e0c)
 
 ## Security (design doc: docs/components/security.md)
 
-- [ ] secrets confined to .env: gitignored, masked prompts, chmod 600 at setup
-- [ ] masked startup status ('api key: set' / 'missing'), never the value
-- [ ] secrets excluded from TurnResult/steps/stats and stdout (test with sentinel key)
-- [ ] setup permission test (chmod 600) and trusted-corpus rules documented
+- [x] secrets confined to .env: gitignored, masked prompts, chmod 600 at setup (53fe3e1, 0da1e0c)
+- [x] masked startup status ('api key: set' / 'missing'), never the value (0da1e0c)
+- [x] secrets excluded from TurnResult/steps/stats and stdout (test with sentinel key) (48132c1)
+- [x] setup permission test (chmod 600) and trusted-corpus rules documented (48132c1, 60f14da)
 
 ## Configuration (design doc: docs/components/config.md)
 
-- [ ] code defaults (provider openai, model gpt-4o-mini, docsDir, limits, mode)
-- [ ] .env read only for apiKey/baseUrl; precedence defaults < .env
-- [ ] loadConfig -> frozen AppConfig + Secrets (apiKey never dumps to stdout)
-- [ ] eager validateConfig: mode enum, positive limits, known provider, valid baseUrl, readable docsDir
-- [ ] missing apiKey routes to CLI setup, not a config error
-- [ ] key tests (precedence, secrecy, validation failures, defaults)
+- [x] code defaults (provider openai, model gpt-4o-mini, docsDir, limits, mode) (53fe3e1)
+- [x] .env read only for apiKey/baseUrl; precedence defaults < .env (53fe3e1)
+- [x] loadConfig -> frozen AppConfig + Secrets (apiKey never dumps to stdout) (53fe3e1)
+- [x] eager validateConfig: mode enum, positive limits, known provider, valid baseUrl, readable docsDir (53fe3e1)
+- [x] missing apiKey routes to CLI setup, not a config error (53fe3e1)
+- [x] key tests (precedence, secrecy, validation failures, defaults) (48132c1)
 
 ## CLI (design doc: docs/components/cli.md)
 
-- [ ] print settings at startup (secrets masked)
-- [ ] first-run setup: masked prompts for api key (and base url), save to .env with chmod 600
-- [ ] prompt for a question, run agent, print JSON (answer, sources, stopReason, stats)
-- [ ] mode: regular omits steps; verbose includes the step trace
-- [ ] REPL: repeat until the user exits or Ctrl-C
-- [ ] agent/config errors: JSON on stdout, stack to stderr, exit code 1
-- [ ] docs/manual-testing.md with edge cases for the manual test pass
+- [x] print settings at startup (secrets masked) (0da1e0c)
+- [x] first-run setup: masked prompts for api key (and base url), save to .env with chmod 600 (0da1e0c)
+- [x] prompt for a question, run agent, print JSON (answer, sources, stopReason, stats) (0da1e0c)
+- [x] mode: regular omits steps; verbose includes the step trace (0da1e0c)
+- [x] REPL: repeat until the user exits or Ctrl-C (0da1e0c)
+- [x] agent/config errors: JSON on stdout, stack to stderr, exit code 1 (0da1e0c)
+- [x] docs/manual-testing.md with edge cases for the manual test pass (pending commit)
 
 ## Testing (design doc: docs/components/testing.md)
 
-- [ ] Vitest wired into `npm test`
-- [ ] super-important unit tests (tools, loop, config, security) - not a huge suite
-- [ ] golden-case suite, key-gated (real API, temperature 0, soft assertions)
-    - [ ] good-result case (key facts, sources, tool trajectory)
-    - [ ] bad-result cases (fabrication, wrong sources, prompt leakage, runaway guard)
-    - [ ] missing-information acknowledgment check
+- [x] Vitest wired into `npm test` (7867c08)
+- [x] super-important unit tests (tools, loop, config, security) - not a huge suite (48132c1)
+- [x] golden-case suite, key-gated (real API, temperature 0, soft assertions) (48132c1)
+    - [x] good-result case (key facts, sources, tool trajectory) (48132c1)
+    - [x] bad-result cases (fabrication, wrong sources, prompt leakage, runaway guard) (48132c1)
+    - [x] missing-information acknowledgment check (48132c1)
 
 ## Future work (backlog)
 
