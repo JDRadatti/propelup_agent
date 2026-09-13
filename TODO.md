@@ -157,7 +157,7 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
 - [x] OPENAI_MODE env override for verbose output (e7aa3d8)
     - [x] config reads OPENAI_MODE; invalid values fail eager validation (e7aa3d8)
     - [x] config tests: verbose override + invalid mode throws (e7aa3d8)
-    - [x] README + config.md + manual-testing.md document the override (pending)
+    - [x] README + config.md + manual-testing.md document the override (ee228c0)
 
 ## Future work (backlog)
 
