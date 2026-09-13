@@ -153,7 +153,7 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
     - [x] forbid literal summarize/summary/overview as search terms (643b9e2)
     - [x] no-hit search output lists available ids as recovery path (643b9e2)
     - [x] golden summary case covers weak and strong phrasings, asserts reads (643b9e2)
-    - [x] docs (agent.md, manual-testing.md) sync (pending)
+    - [x] docs (agent.md, manual-testing.md) sync (80273f5)
 
 ## Future work (backlog)
 
