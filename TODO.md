@@ -148,6 +148,12 @@ and implemented only after its checklist is signed off (see `AGENTS.md`).
     - [x] LoopOptions.systemPrompt threading; CLI and golden build from ids (be320d8)
     - [x] prompt unit tests and golden summarize case asserting reads (be320d8)
     - [x] re-verified summarization end-to-end: 4 calls, 3 reads, 3 sources (be320d8)
+- [x] fix phrasing-sensitive summarization (plural vs singular) (643b9e2)
+    - [x] rule 2/4: overviews skip search and get_document every listed id (643b9e2)
+    - [x] forbid literal summarize/summary/overview as search terms (643b9e2)
+    - [x] no-hit search output lists available ids as recovery path (643b9e2)
+    - [x] golden summary case covers weak and strong phrasings, asserts reads (643b9e2)
+    - [x] docs (agent.md, manual-testing.md) sync (pending)
 
 ## Future work (backlog)
 

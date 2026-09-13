@@ -66,6 +66,11 @@ Ask a question. The result is printed as JSON:
     document ids, and a real multi-line summary, not an empty or hidden answer.
   - Same phrasing variations: `What is this about?`, `Give me a quick overview
     of the company`.
+  - Try the singular too: `please summarize the document` - must behave exactly
+    like the plural form and never search for the literal word "summary".
+  - Make a deliberately no-matching query first, e.g. `summarize the zebra
+    files` - the agent should broaden or read the listed ids, not claim the
+    corpus is empty.
 
 ### Choosing a provider and model
 
@@ -114,6 +119,11 @@ endpoints.
 
 6. Blank/short query behavior: submit an empty line - the REPL should just
    re-prompt (`>`), not error.
+
+7. Ask for something no document contains, e.g. `search for the secret sauce`:
+   - The search tool reports `no documents matched` **and lists the available
+     ids** - the agent should either broaden its terms or go read the listed
+     ids instead of declaring the corpus empty.
 
 7. Multi-part question, e.g. `Who owns the security review and who owns customer
    onboarding?`
