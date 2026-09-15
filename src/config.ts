@@ -15,6 +15,8 @@ export interface AppConfig {
 export interface Secrets {
   apiKey?: string
   baseUrl?: string
+  model?: string
+  mode?: string
 }
 
 export const DEFAULT_LIMITS: Limits = { maxTurns: 8, maxToolCalls: 8, maxTokens: 4000 }
@@ -49,18 +51,22 @@ export function loadEnv(rootDir: string): Secrets {
       const value = trimmed.slice(eq + 1).trim()
       if (key === ENV_KEY && value) secrets.apiKey = value
       if (key === ENV_BASE_URL && value) secrets.baseUrl = value
+      if (key === ENV_MODEL && value) secrets.model = value
+      if (key === ENV_MODE && value) secrets.mode = value
     }
   }
   if (process.env[ENV_KEY]) secrets.apiKey = process.env[ENV_KEY]
   if (process.env[ENV_BASE_URL]) secrets.baseUrl = process.env[ENV_BASE_URL]
+  if (process.env[ENV_MODEL]) secrets.model = process.env[ENV_MODEL]
+  if (process.env[ENV_MODE]) secrets.mode = process.env[ENV_MODE]
   return secrets
 }
 
 export function loadConfig(rootDir: string): { config: AppConfig; secrets: Secrets } {
   const config = defaultConfig(rootDir)
   const secrets = loadEnv(rootDir)
-  if (process.env[ENV_MODEL]) config.model = process.env[ENV_MODEL]
-  if (process.env[ENV_MODE]) config.mode = process.env[ENV_MODE] as AppConfig['mode']
+  if (secrets.model) config.model = secrets.model
+  if (secrets.mode) config.mode = secrets.mode as AppConfig['mode']
   if (secrets.baseUrl) config.baseUrl = secrets.baseUrl
   validateConfig(config)
   return { config, secrets }
